@@ -1,92 +1,49 @@
 openapi: 3.1.0
 info:
   version: '0.1.0'
-  title: 'Public API'
+  title: 'Public Chrood API'
   license:
-    name: MIT
-servers:
-  - url: 'localhost:3000'
+    name: Apache2.0
 paths:
   /user:
-    get:
-      summary: 'Sample endpoint: Returns details about a particular user'
-      operationId: listUser
-      tags:
-        - user
-      parameters:
-        - name: id
-          in: query
-          description: ID of the user
-          required: true
-          schema:
-            type: integer
-            format: int32
-            examples:
-              - 1
-              - 2
+    post:
+      description: 'Creates a new user'
+      operationId: "createUser"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email_address:
+                  description: "The primary email address of the user used for authentication."
+                  type: string
+                password:
+                  description: "The password to authenticate the user."
+                  type: string
+              required:
+                - email_address
+                - password
       responses:
-        '200':
-          description: 'Sample response: Details about a user by ID'
-          headers:
-            x-next:
-              description: A link to the next page of responses
-              schema:
-                type: string
-                examples:
-                  - '/?nextPage=2'
+        "200":
+          description: "User was successfully created"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                type: object
+                properties:
+                  email_address:
+                    description: "The primary email address of the user."
+                    type: string
         default:
-          description: Unexpected error
+          description: "The user could not be created due to an unexpected error"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-components:
-  schemas:
-    User:
-      type: object
-      required:
-        - id
-        - name
-      properties:
-        id:
-          type: integer
-          format: int64
-          examples:
-            - 1
-            - 2
-        name:
-          type: string
-          examples:
-            - John Doe
-        tag:
-          type:
-            - string
-            - 'null'
-          examples:
-            - billing
-            - admin
-    Error:
-      type: object
-      required:
-        - code
-        - message
-      properties:
-        code:
-          type: integer
-          format: int32
-          examples:
-            - 500
-        message:
-          type: string
-          examples:
-            - Something went wrong
-  securitySchemes:
-    BasicAuth:
-      type: http
-      scheme: basic
+                type: object
+                properties:
+                  message:
+                    description: "A descriptive text of the error indicating why the request failed."
+                    type: string
 security:
   - BasicAuth: []
